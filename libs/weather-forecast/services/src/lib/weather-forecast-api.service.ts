@@ -17,7 +17,7 @@ export class WeatherForecastApiService {
 
 	constructor(private readonly _http: HttpClient) {}
 
-	getWeather(cityName: string, mode: 'daily' | 'hourly'): Observable<WeatherLine | string> {
+	getWeather(cityName: string, mode: 'daily' | 'hourly'): Observable<WeatherLine> {
 		return this._getCity(cityName).pipe(
 			switchMap(city => {
 				if (!city) {
@@ -90,7 +90,7 @@ export class WeatherForecastApiService {
 		const params = this._setHttpParams(options);
 		return this._http.get<CityDto[]>(this._apiCityUrl, { params }).pipe(
 			catchError(() => {
-				this._onHandleError('Error!');
+				this._onHandleError('Oops, error!');
 				return EMPTY;
 			}),
 			map(cities => {
