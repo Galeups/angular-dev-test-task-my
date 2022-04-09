@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, catchError, EMPTY, map, Observable, pluck, switchMap } from 'rxjs';
 
-import { CityDto, DailyWeatherDto, HourlyWeatherDto, WeatherLine } from './interfaces';
+import { CityDto, DailyWeatherDto, HourlyWeatherDto } from './interfaces';
+import { City, Mode } from '../../../../../apps/weather-forecast/src/app/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class WeatherForecastApiService {
@@ -17,7 +18,7 @@ export class WeatherForecastApiService {
 
 	constructor(private readonly _http: HttpClient) {}
 
-	getWeather(cityName: string, mode: 'daily' | 'hourly'): Observable<WeatherLine> {
+	getWeather(cityName: string, mode: Mode): Observable<City> {
 		return this._getCity(cityName).pipe(
 			switchMap(city => {
 				if (!city) {
@@ -32,7 +33,7 @@ export class WeatherForecastApiService {
 		this._errors$.next(null);
 	}
 
-	private _getDailyWeather(city: CityDto): Observable<WeatherLine> {
+	private _getDailyWeather(city: CityDto): Observable<City> {
 		const options = {
 			lat: city.lat.toString(),
 			lon: city.lon.toString(),
@@ -46,14 +47,14 @@ export class WeatherForecastApiService {
 			pluck('daily'),
 			map(days => {
 				return {
-					city: city.name,
+					name: city.name,
 					temp: days.slice(0, 7).map(t => Math.round(t.temp.day)),
 				};
 			})
 		);
 	}
 
-	private _getHourlyWeather(city: CityDto): Observable<WeatherLine> {
+	private _getHourlyWeather(city: CityDto): Observable<City> {
 		const options = {
 			lat: city.lat.toString(),
 			lon: city.lon.toString(),
@@ -72,7 +73,7 @@ export class WeatherForecastApiService {
 				}
 
 				return {
-					city: city.name,
+					name: city.name,
 					temp: hours.map(t => Math.round(t.temp)),
 				};
 			})

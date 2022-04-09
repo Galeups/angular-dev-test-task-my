@@ -2,7 +2,7 @@
 	<h1>Welcome to {{ title }}!</h1>
 </header>
 <main>
-	<bp-search (city)="onSearch($event)"></bp-search>
+	<bp-search (city)="onSearch($event)" [isLoading]="isLoading"></bp-search>
 
 	<bp-table></bp-table>
 
