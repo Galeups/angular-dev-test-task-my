@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { forkJoin, Subject, takeUntil } from 'rxjs';
 
 import { WeatherForecastApiService } from '@bp/weather-forecast/services';
-import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { StateTableService } from './services/state-table.service';
 import { Mode, State } from './interfaces';
 import { StateService } from './services/state.service';
@@ -14,12 +14,9 @@ import { StateService } from './services/state.service';
 })
 export class AppComponent implements OnDestroy {
 	title = 'weather-forecast';
-	private readonly _header = {
-		daily: ['City Name', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-		hourly: ['City Name', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '24:00'],
-	};
 	readonly errors$ = this._weatherForecastApi.errors$;
 	isLoading = false;
+
 	private _mode: Mode = 'daily';
 	private readonly _destroy$ = new Subject<boolean>();
 
@@ -38,6 +35,10 @@ export class AppComponent implements OnDestroy {
 		this._getWeather(city);
 	}
 
+	onChangeMode(mode: Mode) {
+		this._stateTable.setState(mode);
+	}
+
 	private _getWeather(city: string) {
 		this.isLoading = true;
 		forkJoin({
@@ -53,7 +54,7 @@ export class AppComponent implements OnDestroy {
 				};
 
 				this._state.setState(newState);
-				this._stateTable.setState(this._header[this._mode], weather[this._mode]);
+				this._stateTable.setState(this._mode, weather[this._mode]);
 				this.isLoading = false;
 				this._cdr.markForCheck();
 			});

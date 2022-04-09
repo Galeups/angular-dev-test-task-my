@@ -3,7 +3,7 @@
 </header>
 <main>
 	<bp-search (city)="onSearch($event)" [isLoading]="isLoading"></bp-search>
-
+	<bp-change-mode (mode)="onChangeMode($event)"></bp-change-mode>
 	<bp-table></bp-table>
 
 	<h2>Next Steps</h2>

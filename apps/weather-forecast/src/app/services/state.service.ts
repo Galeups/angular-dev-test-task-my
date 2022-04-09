@@ -21,4 +21,8 @@ export class StateService {
 	clearState() {
 		this._state$.next([]);
 	}
+
+	getModeWeather(): State[] {
+		return this._state$.getValue();
+	}
 }

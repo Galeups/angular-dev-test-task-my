@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { StateTableService } from '../../services/state-table.service';
-import { Mode } from '../../interfaces';
 
 @Component({
 	selector: 'bp-table',
@@ -9,15 +8,15 @@ import { Mode } from '../../interfaces';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableComponent implements OnInit {
-	header: string[] | null = null;
-
-	@Input() readonly mode: Mode = 'daily';
-
+	// private readonly _header = {
+	// 	daily: ['City Name', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+	// 	hourly: ['City Name', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '24:00'],
+	// };
 	constructor(private readonly _cdr: ChangeDetectorRef, private readonly _stateTable: StateTableService) {}
 
 	ngOnInit() {
 		this._stateTable.state$.subscribe(state => {
-			// console.log(state);
+			console.log(state);
 			this._cdr.markForCheck();
 		});
 	}
