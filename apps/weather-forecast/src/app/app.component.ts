@@ -13,10 +13,10 @@ import { Mode, State } from './interfaces';
 })
 export class AppComponent implements OnInit, OnDestroy {
 	title = 'weather-forecast';
-	readonly errors$ = this._weatherForecastApi.errors$;
 	isLoading = false;
+	readonly errors$ = this._weatherForecastApi.errors$;
 
-	private _mode: Mode = 'daily';
+	mode: Mode = 'daily';
 	private readonly _destroy$ = new Subject<boolean>();
 
 	constructor(
@@ -33,10 +33,16 @@ export class AppComponent implements OnInit, OnDestroy {
 			if (params.mode) {
 				this._stateTable.setState(params.mode);
 			}
+
+			if (params.city) {
+				params.city.split(',').map((city: string) => this._getWeather(city));
+			}
 		});
+
 		this._stateTable.state$.pipe(takeUntil(this._destroy$)).subscribe(state => {
-			this._mode = state.mode;
-			this._router.setParams(state.mode);
+			this.mode = state.mode;
+			// const cities = state.cities.map(city => city.name);
+			// this._router.setParams(state.mode, cities);
 		});
 	}
 
@@ -67,7 +73,7 @@ export class AppComponent implements OnInit, OnDestroy {
 				};
 
 				this._state.setState(newState);
-				this._stateTable.setState(this._mode, weather[this._mode]);
+				this._stateTable.setState(this.mode, weather[this.mode]);
 				this.isLoading = false;
 				this._cdr.markForCheck();
 			});

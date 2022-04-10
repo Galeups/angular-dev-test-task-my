@@ -9,11 +9,14 @@ import { Mode } from '../interfaces';
 export class RouterService {
 	constructor(private readonly _router: Router, private readonly _route: ActivatedRoute) {}
 
-	setParams(mode: Mode) {
+	setParams(mode: Mode, city: (string | null)[]) {
+		const queryParams = {
+			mode,
+			city: city?.length ? city.join(',') : null,
+		};
+
 		this._router.navigate([], {
-			queryParams: {
-				mode,
-			},
+			queryParams,
 		});
 	}
 
