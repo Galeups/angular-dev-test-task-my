@@ -9,9 +9,10 @@ import { SearchComponent } from './components/search/search.component';
 import { TableComponent } from './components/table/table.component';
 import { ChangeModeComponent } from './components/change-mode/change-mode.component';
 import { Routes } from './routes';
+import { MainComponent } from './pages/main/main.component';
 
 @NgModule({
-	declarations: [AppComponent, SearchComponent, TableComponent, ChangeModeComponent],
+	declarations: [AppComponent, SearchComponent, TableComponent, ChangeModeComponent, MainComponent],
 	imports: [BrowserModule, WeatherForecastServicesModule, ReactiveFormsModule, RouterModule.forRoot(Routes)],
 	providers: [],
 	bootstrap: [AppComponent],

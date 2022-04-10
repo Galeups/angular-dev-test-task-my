@@ -1,0 +1,8 @@
+<header class="flex">
+	<h1>Welcome to {{ title }}!</h1>
+</header>
+<main></main>
+
+<bp-search class="search" (city)="onSearch($event)" [isLoading]="isLoading"></bp-search>
+<bp-change-mode class="mode" [value]="mode" (mode)="onChangeMode($event)"></bp-change-mode>
+<bp-table class="table"></bp-table>

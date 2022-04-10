@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { Mode } from '../interfaces';
 
 @Injectable({
@@ -12,7 +11,7 @@ export class RouterService {
 	setParams(mode: Mode, city: (string | null)[]) {
 		const queryParams = {
 			mode,
-			city: city?.length ? city.join(',') : null,
+			city: city.length ? city.join(',') : null,
 		};
 
 		this._router.navigate([], {
@@ -20,7 +19,7 @@ export class RouterService {
 		});
 	}
 
-	get navigate$(): Observable<Params> {
-		return this._route.queryParams;
+	get params(): Params {
+		return this._route.snapshot.queryParams;
 	}
 }
