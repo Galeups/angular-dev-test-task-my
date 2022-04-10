@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Mode, State } from '../../interfaces';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { WeatherForecastApiService } from '@bp/weather-forecast/services';
@@ -8,6 +8,7 @@ import { RouterService, StateService, StateTableService } from '../../services';
 	selector: 'bp-main',
 	templateUrl: './main.component.html',
 	styleUrls: ['./main.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainComponent implements OnInit, OnDestroy {
 	title = 'weather-forecast';
@@ -43,7 +44,7 @@ export class MainComponent implements OnInit, OnDestroy {
 	}
 
 	onErrorClose() {
-		this._weatherForecastApi.onClearError();
+		this._weatherForecastApi.onCloseError();
 	}
 
 	onSearch(city: string) {
