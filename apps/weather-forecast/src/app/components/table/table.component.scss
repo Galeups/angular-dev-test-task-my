@@ -1,0 +1,31 @@
+.table {
+	width: 100%;
+	border: 1px solid grey;
+	border-collapse: collapse;
+	font-size: 14px;
+
+	&__header {
+	}
+
+	&__body {
+	}
+
+	&__row {
+		&:nth-child(2n) {
+			background-color: #f6f8fa;
+		}
+		&--header {
+		}
+	}
+
+	&__col {
+		border: 1px solid grey;
+		padding: 4px;
+		&--header {
+		}
+	}
+
+	.center {
+		text-align: center;
+	}
+}
