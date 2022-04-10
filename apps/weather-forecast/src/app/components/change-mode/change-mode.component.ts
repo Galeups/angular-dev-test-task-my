@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Mode } from '../../interfaces';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
 	selector: 'bp-change-mode',
@@ -27,7 +27,7 @@ export class ChangeModeComponent implements OnInit, OnChanges, OnDestroy {
 	private readonly _destroy$ = new Subject<boolean>();
 
 	ngOnInit() {
-		this.changeMode.valueChanges.subscribe(mode => {
+		this.changeMode.valueChanges.pipe(takeUntil(this._destroy$)).subscribe(mode => {
 			this.mode.emit(mode);
 		});
 	}
