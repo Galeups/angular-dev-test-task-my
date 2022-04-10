@@ -10,9 +10,17 @@ import { TableComponent } from './components/table/table.component';
 import { ChangeModeComponent } from './components/change-mode/change-mode.component';
 import { Routes } from './routes';
 import { MainComponent } from './pages/main/main.component';
+import { NotificationComponent } from './components/notification/notification.component';
 
 @NgModule({
-	declarations: [AppComponent, SearchComponent, TableComponent, ChangeModeComponent, MainComponent],
+	declarations: [
+		AppComponent,
+		SearchComponent,
+		TableComponent,
+		ChangeModeComponent,
+		MainComponent,
+		NotificationComponent,
+	],
 	imports: [BrowserModule, WeatherForecastServicesModule, ReactiveFormsModule, RouterModule.forRoot(Routes)],
 	providers: [],
 	bootstrap: [AppComponent],

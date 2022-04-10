@@ -29,7 +29,7 @@ export class WeatherForecastApiService {
 		);
 	}
 
-	onClearError() {
+	onCloseError() {
 		this._errors$.next(null);
 	}
 
@@ -81,7 +81,7 @@ export class WeatherForecastApiService {
 	}
 
 	private _getCity(name: string): Observable<CityDto> {
-		this.onClearError();
+		this.onCloseError();
 		const options = {
 			q: name,
 			limit: '1',
@@ -96,7 +96,7 @@ export class WeatherForecastApiService {
 			}),
 			map(cities => {
 				if (!cities.length) {
-					this._onHandleError('City was not found!');
+					this._onHandleError(`City ${name} was not found!`);
 				}
 				return cities[0];
 			})
