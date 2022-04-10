@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { StateTableService } from '../../services/state-table.service';
 import { tap } from 'rxjs';
+
+import { StateTableService } from '../../services';
 
 @Component({
 	selector: 'bp-table',
@@ -13,7 +14,6 @@ export class TableComponent {
 	readonly state$ = this._stateTable.state$.pipe(
 		tap(state => {
 			this.isShow = !!state.cities.length;
-			console.log(state);
 		})
 	);
 	readonly header = {

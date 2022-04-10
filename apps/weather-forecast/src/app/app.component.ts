@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { forkJoin, Subject, takeUntil } from 'rxjs';
 
 import { WeatherForecastApiService } from '@bp/weather-forecast/services';
-import { StateTableService } from './services/state-table.service';
+import { RouterService, StateService, StateTableService } from './services';
 import { Mode, State } from './interfaces';
-import { StateService } from './services/state.service';
 
 @Component({
 	selector: 'bp-root',
@@ -24,12 +23,20 @@ export class AppComponent implements OnInit, OnDestroy {
 		private readonly _cdr: ChangeDetectorRef,
 		private readonly _weatherForecastApi: WeatherForecastApiService,
 		private readonly _stateTable: StateTableService,
-		private readonly _state: StateService
+		private readonly _state: StateService,
+		private readonly _router: RouterService
 	) {}
 
 	ngOnInit() {
+		this._router.navigate$.subscribe(params => {
+			console.log(params);
+			if (params.mode) {
+				this._stateTable.setState(params.mode);
+			}
+		});
 		this._stateTable.state$.pipe(takeUntil(this._destroy$)).subscribe(state => {
 			this._mode = state.mode;
+			this._router.setParams(state.mode);
 		});
 	}
 
