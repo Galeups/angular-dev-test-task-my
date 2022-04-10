@@ -1,0 +1,27 @@
+.table {
+	width: 100%;
+	border: 1px solid grey;
+	border-collapse: collapse;
+	font-size: 14px;
+
+	&__header {
+	}
+
+	&__body {
+	}
+
+	&__row {
+		&--header {
+		}
+	}
+
+	&__col {
+		border: 1px solid grey;
+		&--header {
+		}
+	}
+
+	.center {
+		text-align: center;
+	}
+}
