@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { forkJoin, Subject, takeUntil } from 'rxjs';
 
 import { WeatherForecastApiService } from '@bp/weather-forecast/services';
@@ -12,7 +12,7 @@ import { StateService } from './services/state.service';
 	styleUrls: ['./app.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnInit, OnDestroy {
 	title = 'weather-forecast';
 	readonly errors$ = this._weatherForecastApi.errors$;
 	isLoading = false;
@@ -26,6 +26,12 @@ export class AppComponent implements OnDestroy {
 		private readonly _stateTable: StateTableService,
 		private readonly _state: StateService
 	) {}
+
+	ngOnInit() {
+		this._stateTable.state$.pipe(takeUntil(this._destroy$)).subscribe(state => {
+			this._mode = state.mode;
+		});
+	}
 
 	onErrorClose() {
 		this._weatherForecastApi.onClearError();

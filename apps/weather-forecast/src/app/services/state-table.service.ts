@@ -8,7 +8,7 @@ import { StateService } from './state.service';
 })
 export class StateTableService {
 	private readonly initState: StateTable = {
-		mode: null,
+		mode: 'daily',
 		cities: [],
 	};
 	private readonly _stateTable = new BehaviorSubject<StateTable>(this.initState);

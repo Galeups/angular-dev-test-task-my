@@ -1,7 +1,7 @@
 import { Mode } from './mode.type';
 
 export interface StateTable {
-	mode: Mode | null;
+	mode: Mode;
 	cities: City[];
 }
 
