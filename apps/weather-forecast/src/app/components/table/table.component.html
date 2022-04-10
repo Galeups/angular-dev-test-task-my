@@ -1,0 +1,20 @@
+<ng-container *ngIf="state$ | async as table">
+	<table class="table" *ngIf="isShow">
+		<thead class="table__header">
+			<tr class="table__row table__row--header">
+				<ng-container *ngIf="table.mode === 'daily'">
+					<th class="table__col table__col--header" *ngFor="let header of header.daily">{{ header }}</th>
+				</ng-container>
+				<ng-container *ngIf="table.mode === 'hourly'">
+					<th class="table__col table__col--header" *ngFor="let header of header.hourly">{{ header }}</th>
+				</ng-container>
+			</tr>
+		</thead>
+		<tbody class="table__body">
+			<tr class="table__row" *ngFor="let city of table.cities">
+				<td class="table__col">{{ city.name }}</td>
+				<td class="table__col center" *ngFor="let temp of city.temp">{{ temp }}°</td>
+			</tr>
+		</tbody>
+	</table>
+</ng-container>
