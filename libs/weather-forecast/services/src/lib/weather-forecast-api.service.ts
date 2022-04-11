@@ -11,7 +11,6 @@ export class WeatherForecastApiService {
 		return this._errors$.asObservable();
 	}
 
-	private readonly _apiKey = '010721642521f31b0fbc8c3831d45951';
 	private readonly _apiCityUrl = 'https://api.openweathermap.org/geo/1.0/direct';
 	private readonly _apiWeatherUrl = 'https://api.openweathermap.org/data/2.5/onecall';
 	private readonly _errors$ = new BehaviorSubject<string | null>(null);
@@ -37,7 +36,6 @@ export class WeatherForecastApiService {
 		const options = {
 			lat: city.lat.toString(),
 			lon: city.lon.toString(),
-			appid: this._apiKey,
 			exclude: 'current,minutely,hourly,alerts',
 			units: 'metric',
 		};
@@ -58,7 +56,6 @@ export class WeatherForecastApiService {
 		const options = {
 			lat: city.lat.toString(),
 			lon: city.lon.toString(),
-			appid: this._apiKey,
 			exclude: 'current,minutely,daily,alerts',
 			units: 'metric',
 		};
@@ -85,7 +82,6 @@ export class WeatherForecastApiService {
 		const options = {
 			q: name,
 			limit: '1',
-			appid: this._apiKey,
 		};
 
 		const params = this._setHttpParams(options);

@@ -6,6 +6,7 @@
 
 export const environment = {
 	production: false,
+	apiId: '010721642521f31b0fbc8c3831d45951',
 };
 
 /*
