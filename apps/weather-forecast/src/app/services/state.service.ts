@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 import { State } from '../interfaces';
 
@@ -14,8 +14,8 @@ export class StateService {
 		this._state$.next(newState);
 	}
 
-	get state$(): Observable<State[]> {
-		return this._state$.asObservable();
+	get state(): State[] {
+		return this._state$.getValue();
 	}
 
 	clearState() {
