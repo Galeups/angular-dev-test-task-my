@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, catchError, EMPTY, map, Observable, pluck, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, map, Observable, pluck } from 'rxjs';
 
 import { CityDto, DailyWeatherDto, HourlyWeatherDto } from './interfaces';
-import { City, Mode } from '../../../../../apps/weather-forecast/src/app/interfaces';
+import { City } from '../../../../../apps/weather-forecast/src/app/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class WeatherForecastApiService {
@@ -11,28 +11,20 @@ export class WeatherForecastApiService {
 		return this._errors$.asObservable();
 	}
 
-	private readonly _apiCityUrl = 'https://api.openweathermap.org/geo/1.0/direct';
-	private readonly _apiWeatherUrl = 'https://api.openweathermap.org/data/2.5/onecall';
 	private readonly _errors$ = new BehaviorSubject<string | null>(null);
-
 	constructor(private readonly _http: HttpClient) {}
 
-	getWeather(cityName: string, mode: Mode): Observable<City> {
-		return this._getCity(cityName).pipe(
-			switchMap(city => {
-				if (!city) {
-					return EMPTY;
-				}
-				return mode === 'daily' ? this._getDailyWeather(city) : this._getHourlyWeather(city);
-			})
-		);
+	setError(message: string) {
+		if (message) {
+			this._errors$.next(message);
+		}
 	}
 
 	onCloseError() {
 		this._errors$.next(null);
 	}
 
-	private _getDailyWeather(city: CityDto): Observable<City> {
+	getDailyWeather(city: CityDto, url: string): Observable<City> {
 		const options = {
 			lat: city.lat.toString(),
 			lon: city.lon.toString(),
@@ -41,7 +33,7 @@ export class WeatherForecastApiService {
 		};
 
 		const params = this._setHttpParams(options);
-		return this._http.get<DailyWeatherDto>(this._apiWeatherUrl, { params }).pipe(
+		return this._http.get<DailyWeatherDto>(url, { params }).pipe(
 			pluck('daily'),
 			map(days => {
 				return {
@@ -52,7 +44,7 @@ export class WeatherForecastApiService {
 		);
 	}
 
-	private _getHourlyWeather(city: CityDto): Observable<City> {
+	getHourlyWeather(city: CityDto, url: string): Observable<City> {
 		const options = {
 			lat: city.lat.toString(),
 			lon: city.lon.toString(),
@@ -61,7 +53,7 @@ export class WeatherForecastApiService {
 		};
 
 		const params = this._setHttpParams(options);
-		return this._http.get<HourlyWeatherDto>(this._apiWeatherUrl, { params }).pipe(
+		return this._http.get<HourlyWeatherDto>(url, { params }).pipe(
 			pluck('hourly'),
 			map(temp => {
 				const hours = [];
@@ -77,7 +69,7 @@ export class WeatherForecastApiService {
 		);
 	}
 
-	private _getCity(name: string): Observable<CityDto> {
+	getCity(name: string, url: string): Observable<CityDto> {
 		this.onCloseError();
 		const options = {
 			q: name,
@@ -85,7 +77,7 @@ export class WeatherForecastApiService {
 		};
 
 		const params = this._setHttpParams(options);
-		return this._http.get<CityDto[]>(this._apiCityUrl, { params }).pipe(
+		return this._http.get<CityDto[]>(url, { params }).pipe(
 			catchError(() => {
 				this._onHandleError('Oops, error!');
 				return EMPTY;

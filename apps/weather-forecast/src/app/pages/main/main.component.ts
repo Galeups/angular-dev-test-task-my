@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { concatMap, forkJoin, Subject, takeUntil } from 'rxjs';
+
 import { Mode, State } from '../../interfaces';
-import { forkJoin, Subject, takeUntil } from 'rxjs';
 import { WeatherForecastApiService } from '@bp/weather-forecast/services';
 import { RouterService, StateService, StateTableService } from '../../services';
+import { environment } from '../../../environments/environment';
 
 @Component({
 	selector: 'bp-main',
@@ -12,12 +14,11 @@ import { RouterService, StateService, StateTableService } from '../../services';
 })
 export class MainComponent implements OnInit, OnDestroy {
 	title = 'weather-forecast';
-
 	isLoading = false;
-	readonly errors$ = this._weatherForecastApi.errors$;
-
 	mode: Mode = 'daily';
+
 	private readonly _destroy$ = new Subject<boolean>();
+	private readonly _env = environment;
 
 	constructor(
 		private readonly _cdr: ChangeDetectorRef,
@@ -43,10 +44,6 @@ export class MainComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	onErrorClose() {
-		this._weatherForecastApi.onCloseError();
-	}
-
 	onSearch(city: string) {
 		this._getWeather(city);
 	}
@@ -55,14 +52,30 @@ export class MainComponent implements OnInit, OnDestroy {
 		this._stateTable.setState(mode);
 	}
 
-	private _getWeather(city: string) {
+	private _getWeather(cityName: string) {
+		if (!cityName) {
+			return;
+		}
+
 		this.isLoading = true;
-		forkJoin({
-			daily: this._weatherForecastApi.getWeather(city, 'daily'),
-			hourly: this._weatherForecastApi.getWeather(city, 'hourly'),
-		})
-			.pipe(takeUntil(this._destroy$))
+
+		this._weatherForecastApi
+			.getCity(cityName, this._env.apiCityUrl)
+			.pipe(
+				takeUntil(this._destroy$),
+				concatMap(city => {
+					return forkJoin({
+						daily: this._weatherForecastApi.getDailyWeather(city, this._env.apiWeatherUrl),
+						hourly: this._weatherForecastApi.getHourlyWeather(city, this._env.apiWeatherUrl),
+					});
+				})
+			)
 			.subscribe(weather => {
+				if (!this._isCityValid(weather.daily.name)) {
+					this._weatherForecastApi.setError(`City ${weather.daily.name} was added!`);
+					return;
+				}
+
 				const newState: State = {
 					city: weather.daily.name,
 					daily: weather.daily,
@@ -74,6 +87,10 @@ export class MainComponent implements OnInit, OnDestroy {
 				this.isLoading = false;
 				this._cdr.markForCheck();
 			});
+	}
+
+	private _isCityValid(name: string | null): boolean {
+		return !this._state.state.some(city => city.city === name);
 	}
 
 	ngOnDestroy() {
