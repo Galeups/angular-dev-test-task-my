@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { concatMap, forkJoin, Subject, takeUntil } from 'rxjs';
+import { forkJoin, Subject, switchMap, takeUntil } from 'rxjs';
 
 import { Mode, State } from '../../interfaces';
 import { WeatherForecastApiService } from '@bp/weather-forecast/services';
@@ -63,12 +63,12 @@ export class MainComponent implements OnInit, OnDestroy {
 			.getCity(cityName, this._env.apiCityUrl)
 			.pipe(
 				takeUntil(this._destroy$),
-				concatMap(city => {
-					return forkJoin({
+				switchMap(city =>
+					forkJoin({
 						daily: this._weatherForecastApi.getDailyWeather(city, this._env.apiWeatherUrl),
 						hourly: this._weatherForecastApi.getHourlyWeather(city, this._env.apiWeatherUrl),
-					});
-				})
+					})
+				)
 			)
 			.subscribe(weather => {
 				if (!this._isCityValid(weather.daily.name)) {
